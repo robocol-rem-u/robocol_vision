@@ -39,10 +39,10 @@ pts_dst = np.append(pts_dst, [(width-1,0)], axis=0)
 pts_dst = np.append(pts_dst, [(width-1,height-1)], axis=0)
 pts_dst = np.append(pts_dst, [(0,height-1)],  axis=0)
 
-greenLower = (46, 42, 97)
-greenUpper = (96, 218, 255)
-blueLower = (100, 127, 26)
-blueUpper = (141, 237, 172)
+greenLower = (63, 62, 90)
+greenUpper = (122, 190, 156)
+blueLower = (95, 110, 90)
+blueUpper = (115, 211, 140)
 
 
 
