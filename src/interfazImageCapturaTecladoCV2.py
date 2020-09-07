@@ -122,7 +122,7 @@ if __name__ == "__main__":
 	#threading.Thread(target=waitKey).start()
 	#threading.Thread(target=mostrarInterfaz).start()
 	topico_escogido = input("Cual topico quieres ver?")
-
+	
 
 	startNode(topico_escogido)
 		

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import sys
 import cv2
@@ -9,11 +9,11 @@ from sensor_msgs.msg import Image
 def start_node():
     rospy.init_node('image_pub')
     rospy.loginfo('image_pub node started')
-    pub = rospy.Publisher('rgb/image_rect_color', Image, queue_size=10)
+    pub = rospy.Publisher('image', Image, queue_size=10)
 
 
 
-    cap= cv2.VideoCapture(1)
+    cap= cv2.VideoCapture(0)
     
     while(1):
         _, frame= cap.read()

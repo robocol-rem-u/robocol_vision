@@ -8,9 +8,6 @@ import numpy as np
 
 # known pump geometry
 #  - units are pixels (of half-size image)
-PUMP_DIAMETER = 360
-PISTON_DIAMETER = 90
-PISTON_COUNT = 7
 
 def start_node():
     rospy.init_node('camera_subscriber_hd1')
