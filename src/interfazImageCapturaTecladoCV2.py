@@ -8,9 +8,14 @@ import numpy as np
 import time
 import rospy
 import threading
-
+from geometry_msgs.msg import Twist
 
 global img_counter
+global posicionTwist
+posicionTwist=Twist()
+posicionTwist.linear.x=0
+posicionTwist.linear.y=0
+posicionTwist.linear.z=0
 img_counter=0
 #cam = cv2.VideoCapture(0)
 
@@ -51,7 +56,14 @@ def algMaximizacion(lista):
 		
 
 def callbackProcessImage(msg):
-	global imagenTopico, img_counter, bandera, k
+	global imagenTopico, img_counter, bandera, k, posicionTwist
+	
+	font                   = cv2.FONT_HERSHEY_SIMPLEX
+	bottomLeftCornerOfText = (5,450)
+	fontScale              = 1
+	fontColor              = (252, 3, 248)
+	lineType               = 2
+
 
 	imagenTopico=CvBridge().imgmsg_to_cv2(msg) #es un np array
 
@@ -80,8 +92,10 @@ def callbackProcessImage(msg):
 			img_name="frame_{}.png".format(ultimoNumero)
 			imageCounter=ultimoNumero
 		
-	
 		
+		posicionText = "["+str(round(posicionTwist.linear.x,2))+","+str(round(posicionTwist.linear.y,2))+","+str(round(posicionTwist.linear.y,2))+"]"
+	#cv2.imwrite('imagenes/'+img_name, frame)
+		cv2.putText(imagenTopico, posicionText, bottomLeftCornerOfText,font,fontScale,fontColor,lineType)
 	#cv2.imwrite('imagenes/'+img_name, frame)
 		cv2.imwrite('imagenes/'+img_name, imagenTopico)
 
@@ -90,18 +104,18 @@ def callbackProcessImage(msg):
 	
 
 
-
-
-
-
-
-
+def callbackPosicion(msg):
+	global posicionTwist
+	posicionTwist = msg
+	
+	
 def startNode(topico_escogido):
 	rospy.init_node('robocol_vision_camara_image',anonymous=True)
 	rospy.loginfo('camera_subscriber_hd1 started')
 	#nombreVentana="Topico: ",topico_escogido
 	#cv2.namedWindow(nombreVentana)
 	#rospy.Subscriber("/camera_publisher_hd1/image_raw", Image , callbackProcessImage)
+	sub1 =rospy.Subscriber("/robocol/pose", Twist , callbackPosicion)
 	sub =rospy.Subscriber(topico_escogido, Image , callbackProcessImage)
 	rospy.spin()
 	#cam.release()

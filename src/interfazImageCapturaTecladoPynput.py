@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import cv2
 import os
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CompressedImage
+from geometry_msgs.msg import Twist
 from cv_bridge import CvBridge
 import numpy as np
 import time
@@ -12,6 +13,11 @@ from pynput.keyboard import Key, Listener
 
 global tomarFoto
 global img_counter
+global posicionTwist
+posicionTwist=Twist()
+posicionTwist.linear.x=0
+posicionTwist.linear.y=0
+posicionTwist.linear.z=0
 img_counter=0
 tomarFoto = False
 #cam = cv2.VideoCapture(0)
@@ -71,7 +77,14 @@ def algMaximizacion(lista):
 		
 
 def callbackProcessImage(msg):
-	global imagenTopico, img_counter, tomarFoto
+	global imagenTopico, img_counter, tomarFoto, posicionTwist
+
+	font                   = cv2.FONT_HERSHEY_SIMPLEX
+	bottomLeftCornerOfText = (5,450)
+	fontScale              = 1
+	fontColor              = (252, 3, 248)
+	lineType               = 2
+
 
 	imagenTopico=CvBridge().imgmsg_to_cv2(msg) #es un np array
 
@@ -97,15 +110,20 @@ def callbackProcessImage(msg):
 			imageCounter=ultimoNumero
 		
 	
-		
+		posicionText = "["+str(round(posicionTwist.linear.x,2))+","+str(round(posicionTwist.linear.y,2))+","+str(round(posicionTwist.linear.y,2))+"]"
 	#cv2.imwrite('imagenes/'+img_name, frame)
+		cv2.putText(imagenTopico, posicionText, bottomLeftCornerOfText,font,fontScale,fontColor,lineType)
 		cv2.imwrite('imagenes/'+img_name, imagenTopico)
 
 		print("{} written! Guardado en {}".format(img_name,rutaImagen))
 
 
 	
-
+def callbackPosicion(msg):
+	global posicionTwist
+	posicionTwist = msg
+	
+	
 
 
 
@@ -116,10 +134,15 @@ def callbackProcessImage(msg):
 def startNode(topico_escogido):
 	rospy.init_node('robocol_vision_camara_image',anonymous=True)
 	rospy.loginfo('camera_subscriber_hd1 started')
+	
+	
+	sub =rospy.Subscriber(topico_escogido, Image , callbackProcessImage)
+	
 	#nombreVentana="Topico: ",topico_escogido
 	#cv2.namedWindow(nombreVentana)
 	#rospy.Subscriber("/camera_publisher_hd1/image_raw", Image , callbackProcessImage)
-	sub =rospy.Subscriber(topico_escogido, Image , callbackProcessImage)
+	
+	sub1 =rospy.Subscriber("/robocol/pose", Twist , callbackPosicion)
 	threading.Thread(target=hiloPynput).start()
 	rospy.spin()
 	#cam.release()
