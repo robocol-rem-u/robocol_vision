@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
@@ -142,7 +142,7 @@ def start_node():
     rospy.spin()
     
     
-def impresion()
+def impresion():
     global CoorMsg, imgMsg,imgMsgMask
     pub=rospy.Publisher("/robocol_vision_object_FINAL", String, queue_size=10)
     pub2 = rospy.Publisher("/robocol_vision_Segmentation", Image, queue_size=10)
@@ -187,8 +187,8 @@ def process_image(msg):
         images = []
         dim = (270,270)
         for i in range(len(folder_path)):
-        images.append(cv2.imread(folder_path[i],0))
-        images[i] = cv2.resize(images[i],dim,interpolation=cv2.INTER_CUBIC)
+        	images.append(cv2.imread(folder_path[i],0))
+        	images[i] = cv2.resize(images[i],dim,interpolation=cv2.INTER_CUBIC)
 
  
         frame= CvBridge().imgmsg_to_cv2(msg)
@@ -281,6 +281,9 @@ def process_image(msg):
                 #MENSAJEEEEEEEEEEEEEEEEEEEEEEEEEeee
                     print("MENSAJEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
                     print(CoorMsg)
+                    
+                except Exception as err:
+                    print(err)
 
 
 
@@ -288,6 +291,7 @@ def process_image(msg):
         if key == ord('q'):
             cap.release()
             cv2.destroyAllWindows()
+
 
     except Exception as err:
         print(err)
