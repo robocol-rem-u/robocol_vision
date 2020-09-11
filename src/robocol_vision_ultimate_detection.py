@@ -27,7 +27,7 @@ global CoorMsg, imgMsg,imgMsgMask
 
 
 aruco_dict= aruco.custom_dictionary(20,7)
-aruco_dict.byte_compile = np.empty(shape = (20, 7, 4), dtype = np.uint8)
+aruco_dict.bytesList = np.empty(shape = (20, 7, 4), dtype = np.uint8)
 
 
 #0
