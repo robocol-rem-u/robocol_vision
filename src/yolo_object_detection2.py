@@ -93,8 +93,8 @@ def yolo():
                 else:
                     distance = 0
                     depth = 100
-            OUTLIST = [detection,distance,direction,depth]
-            OUTLIST = str(OUTLIST)
+            OUTLIST = str([detection,distance,direction,depth,0])
+            #OUTLIST = str(OUTLIST)
             print(OUTLIST)
         cv2.imshow("Image", img)
                 
