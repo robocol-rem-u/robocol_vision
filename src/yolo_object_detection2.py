@@ -11,6 +11,7 @@ import rospy
 from cv_bridge import CvBridge
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
+import time
 
 global coor_max, OUTLIST, img, depth
 coor_max = [0,0,0,0]
@@ -20,6 +21,7 @@ depth = 0
 
 def yolo():
     global coor_max, OUTLIST, img, depth
+    time.sleep(10) #Esperar a que se asigne primero la variable imagenTopico del callback
     net = cv2.dnn.readNet("yolov3_training_2000.weights", "yolov3_testing.cfg")
     classes = ["Station"]
     layer_names = net.getLayerNames()
@@ -31,7 +33,8 @@ def yolo():
     while True:
         #ret, img = cap.read()
         #img = cv2.resize(img, None, fx=0.4, fy=0.4)
-        height, width, channels = img.shape
+        imgnp=np.array(img)
+        height, width, channels = imgnp.shape
 
         # Detecting objects
         blob = cv2.dnn.blobFromImage(img, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
@@ -109,22 +112,22 @@ def call_back_depth(data):
     y1 = coor_max[1]
     y2 = coor_max[3]
 
-    image = CvBridge().imgmsg_to_cv2(data,"bgr8")
+    image = CvBridge().imgmsg_to_cv2(data)
     ##################################
-    depth_bb = image[y1:y2,x1:x2,0].astype(float)
+    depth_bb = image[y1:y2,x1:x2].astype(float)
     depth,_,_,_ = cv2.mean(depth_bb)
 
 def call_back_img(data):
     global img
-    img = CvBridge().imgmsg_to_cv2(data,"bgr8")
+    img = CvBridge().imgmsg_to_cv2(data)
 
 
 def listener():
     global OUTLIST
     #Subscriber
     rospy.init_node('robocol_vision_yolo_distance',anonymous=False) #robocol_vision_distance
-    #rospy.Subscriber(''zed2/depth_registered',Image,call_back_depth)
-    rospy.Subscriber('/zed2/rgb/image_rect_color',Image,call_back_depth)
+    rospy.Subscriber('/zed2/depth_registered',Image,call_back_depth)
+    #rospy.Subscriber('/zed2/rgb/image_rect_color',Image,call_back_depth)
     rospy.Subscriber('/zed2/rgb/image_rect_color',Image,call_back_img)
     
     threading.Thread(target=yolo).start()
