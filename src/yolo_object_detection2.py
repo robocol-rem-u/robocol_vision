@@ -132,7 +132,7 @@ def listener():
     
     threading.Thread(target=yolo).start()
     #Publisher
-    dist_publisher = rospy.Publisher('/robocol_vision_object_distance', String, queue_size=10)
+    dist_publisher = rospy.Publisher('/robocol_vision_object_FINAL', String, queue_size=10)
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         dist_publisher.publish(OUTLIST)
