@@ -133,7 +133,7 @@ def start_node():
     rospy.init_node('camera_subscriber_hd8')
     rospy.loginfo('camera_subscriber_hd8_started')
     rospy.Subscriber('robocol_vision_object_distance', String , process_YOLO)
-    rospy.Subscriber('zed2/left/image_rect_color', Image , process_image)
+    rospy.Subscriber('zed2/rgb/image_rect_color', Image , process_image)
 
     t = threading.Thread(target=impresion)
     t.start()
